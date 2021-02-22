@@ -77,6 +77,13 @@ namespace PWBolt_GUI
                 }
             }
         }
+        /// <summary>
+        /// Double click cell to send to clipboard
+        /// </summary>
+        private void DataGrid_Accounts_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            Clipboard.SetText(DataGrid_Accounts[e.ColumnIndex, e.RowIndex].Value.ToString());
+        }
 
         /// <summary>
         /// Show AddAccount textboxfields and hide other options.
