@@ -13,16 +13,25 @@ namespace PWBolt_GUI
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Check if string only contains allowed characters
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
         public bool isStrValid(string str)
         {
             return Regex.IsMatch(str, @"^[a-zA-Z0-9\@\.]+$");
         }
 
         /// <summary>
-        /// lastIdValue will serve as auto increment for our row id
+        /// lastIdValue will serve as auto increment for row id
         /// </summary>
         int lastIdValue = 0;
 
+        
+        /// <summary>
+        /// If user selects a row, set Edit Textbox field value to current select row value in datagridview.
+        /// </summary>
         private void DataGrid_Accounts_SelectionChanged(object sender, EventArgs e)
         {
             if (DataGrid_Accounts.SelectedRows.Count != 0 && btn_EditAccount.Enabled && DataGrid_Accounts.Rows.Count > 1)
@@ -34,6 +43,9 @@ namespace PWBolt_GUI
             }
         }
 
+        /// <summary>
+        /// Update lastIdValue when the user delete a row.
+        /// </summary>
         private void DataGrid_Accounts_RowsRemoved(object sender, DataGridViewRowsRemovedEventArgs e)
         {
             if (DataGrid_Accounts.Rows.Count >= 1) // get current last row Id value
@@ -47,6 +59,9 @@ namespace PWBolt_GUI
             }
         }
 
+        /// <summary>
+        /// Populate DataGridView for first login
+        /// </summary>
         private async void refreshDataList()
         {
             DataGrid_Accounts.Rows.Clear();
@@ -63,6 +78,9 @@ namespace PWBolt_GUI
             }
         }
 
+        /// <summary>
+        /// Show AddAccount textboxfields and hide other options.
+        /// </summary>
         private void btn_AddAccount_Click(object sender, EventArgs e)
         {
             txtBox_pass.Clear();
@@ -80,6 +98,9 @@ namespace PWBolt_GUI
             btn_DeleteAccount.Enabled = !btn_DeleteAccount.Enabled;
         }
 
+        /// <summary>
+        /// Show Edit Account textboxfields, hide other options and send value of selected row to textboxfields.
+        /// </summary>
         private void btn_EditAccount_Click(object sender, EventArgs e)
         {
             if (DataGrid_Accounts.SelectedRows.Count != 0)
@@ -105,6 +126,9 @@ namespace PWBolt_GUI
             }
         }
 
+        /// <summary>
+        /// Delete account from usertable and datagridview(async)
+        /// </summary>
         private async void btn_DeleteAccount_Click(object sender, EventArgs e)
         {
             if (DataGrid_Accounts.SelectedRows.Count != 0)
@@ -112,10 +136,13 @@ namespace PWBolt_GUI
                 int curIndex = DataGrid_Accounts.CurrentRow.Index;
                 string id = DataGrid_Accounts.Rows[curIndex].Cells[0].Value.ToString();
                 await WebServer.bolt_DeleteAccountAsync(id);
-                DataGrid_Accounts.Rows.RemoveAt(curIndex);
+                refreshDataList();
             }
         }
 
+        /// <summary>
+        /// Update user's table in database(async) and Update client datagridview
+        /// </summary>
         private async void btn_Done_Click(object sender, EventArgs e)
         {
             string web = txtBox_website.Text;
@@ -143,12 +170,14 @@ namespace PWBolt_GUI
             }
         }
 
+        /// <summary>
+        /// Submit account to user's table in database(async) and add account to clients's datagridview
+        /// </summary>
         private async void btn_Submit_Click(object sender, EventArgs e)
         {
             string web = txtBox_website.Text;
             string user = txtBox_username.Text;
             string pass = txtBox_pass.Text;
-            
             if (isStrValid(web) && !string.IsNullOrWhiteSpace(web) && !string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(pass))
             {
                 lbl_web.Visible = false;
@@ -164,10 +193,13 @@ namespace PWBolt_GUI
                 lastIdValue++;
                 string[] account = { lastIdValue.ToString(), web, user, pass };
                 DataGrid_Accounts.Rows.Add(account);
-                await WebServer.bolt_AddAccountAsync(lastIdValue.ToString(), web, user, pass);
+                await WebServer.bolt_AddAccountAsync( web, user, pass);
             }
         }
 
+        /// <summary>
+        /// Generate random password
+        /// </summary>
         private void btn_random_Click(object sender, EventArgs e)
         {
             if (btn_AddAccount.Enabled || btn_EditAccount.Enabled)
@@ -183,18 +215,33 @@ namespace PWBolt_GUI
             }
         }
 
+        /// <summary>
+        /// Prepare Datagridview for population
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MainForm_Load(object sender, EventArgs e)
         {
             DataGrid_Accounts.Rows.Insert(0, "");
             refreshDataList();
         }
 
+        /// <summary>
+        /// Close current form and return to loginform
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_logout_Click(object sender, EventArgs e)
         {
             WebServer.Logout();
             this.Close();
         }
 
+        /// <summary>
+        /// Destroy sessions/cookes then Close current form and exit.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btn_exit_Click(object sender, EventArgs e)
         {
             WebServer.Logout();

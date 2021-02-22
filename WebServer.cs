@@ -8,16 +8,13 @@ using System.Windows.Forms;
 
 namespace PWBolt_GUI.Network
 {
+    [JsonObject(ItemNullValueHandling = NullValueHandling.Ignore)]
     class Account
     {
         public string id { get; set; }
         public string website { get; set; }
         public string username { get; set; }
         public string password { get; set; }
-    }
-    class AccID
-    {
-        public string id { get; set; }
     }
     class Login
     {
@@ -27,11 +24,16 @@ namespace PWBolt_GUI.Network
     static class WebServer
     {
         private static CookieContainer cookieJar = new CookieContainer();
-        private static string webserver = @"https://elucidative-designa.000webhostapp.com";
+        private static string webserver = @"http://localhost";
         private static bool _isLoggedIn = false;
         public static bool IsLoggedIn { get { return _isLoggedIn; } set { _isLoggedIn = value; } }
 
-
+        /// <summary>
+        /// Send a post request method to webserver
+        /// </summary>
+        /// <param name="rawJson">Parsed json data to be passed in webserver</param>
+        /// <param name="URL">location endpoint in webserver</param>
+        /// <returns>webserver response as a string</returns>
         private static async Task<string> SendPostRequestAsync(string rawJson, string URL)
         {
             var data = new StringContent(rawJson, Encoding.UTF8, "application/json");
@@ -54,6 +56,11 @@ namespace PWBolt_GUI.Network
             return "ERROR";
         }
 
+        /// <summary>
+        /// Send a getrequest in webserver
+        /// </summary>
+        /// <param name="URL">location endpoint in webserver</param>
+        /// <returns>webserver response as a string</returns>
         private static async Task<string> SendResponseAsync(string URL)
         {
             var handler = new HttpClientHandler
@@ -75,6 +82,10 @@ namespace PWBolt_GUI.Network
             return "ERROR";
         }
 
+        /// <summary>
+        /// Login to webserver endpoint and then save session of login. 
+        /// </summary>
+        /// <returns>webserver response as a string</returns>
         public static async Task LoginPWBolt(string user, string password)
         {
             var acc = new Login { username = user, pwbolt = password };
@@ -93,6 +104,10 @@ namespace PWBolt_GUI.Network
             }
         }
 
+        /// <summary>
+        /// Register to webserver endpoint 
+        /// </summary>
+        /// <returns>webserver response as a string</returns>
         public static async Task RegisterPWBoltAsync(string user, string password)
         {
             var acc = new Login { username = user, pwbolt = password };
@@ -105,15 +120,22 @@ namespace PWBolt_GUI.Network
             }
         }
 
+        /// <summary>
+        /// Get user's table at webserver
+        /// </summary>
+        /// <returns>webserver response as a string</returns>
         public static Task<string> bolt_DisplayAccountAsync()
         {
             Task<string> taskResponse = SendResponseAsync(webserver + "/bolt_DisplayAccount.php");
             return taskResponse;
         }
 
-        public static async Task bolt_AddAccountAsync(string id,string web, string user, string pass)
+        /// <summary>
+        /// Send json parsed account to user's table in webserver
+        /// </summary>
+        public static async Task bolt_AddAccountAsync(string web, string user, string pass)
         {
-            var acc = new Account { id = id, website = web, username = user, password = pass };
+            var acc = new Account { website = web, username = user, password = pass };
             string json = JsonConvert.SerializeObject(acc);
             Task<string> taskResponse = SendPostRequestAsync(json, webserver + "/bolt_AddAccount.php");
             string response = await taskResponse;
@@ -123,9 +145,12 @@ namespace PWBolt_GUI.Network
             }
         }
 
-        public static async Task bolt_EditAccountAsync(string id, string web, string user, string pass)
+        /// <summary>
+        /// Update/Modify user account from user's table
+        /// </summary>
+        public static async Task bolt_EditAccountAsync(string id,string web, string user, string pass)
         {
-            var acc = new Account { id= id, website = web, username = user, password = pass };
+            var acc = new Account { id = id ,website = web, username = user, password = pass };
             string json = JsonConvert.SerializeObject(acc);
             Task<string> taskResponse = SendPostRequestAsync(json, webserver + "/bolt_EditAccount.php");
             string response = await taskResponse;
@@ -135,9 +160,12 @@ namespace PWBolt_GUI.Network
             }
         }
 
+        /// <summary>
+        /// Delete user account from user's table
+        /// </summary>
         public static async Task bolt_DeleteAccountAsync(string id)
         {
-            var accID = new AccID { id = id };
+            var accID = new Account { id = id };
             string json = JsonConvert.SerializeObject(accID);
             Task<string> taskResponse = SendPostRequestAsync(json, webserver + "/bolt_DeleteAccount.php");
             string response = await taskResponse;

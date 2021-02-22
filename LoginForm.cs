@@ -14,7 +14,9 @@ namespace PWBolt_GUI
             InitializeComponent();
         }
 
-        //Login Event
+        /// <summary>
+        /// login to webserver if account is valid(minimum user,pass size is 5)
+        /// </summary>
         private async void btn_LogIn_Click(object sender, EventArgs e)
         {
             user = txtBox_user.Text;
@@ -38,7 +40,10 @@ namespace PWBolt_GUI
             else
                 MessageBox.Show("Empty Fields");
         }
-        //Register Event
+
+        /// <summary>
+        /// register account to webserver if account is valid(minimum user,pass size is 5)
+        /// </summary>
         private async void btn_register_Click(object sender, EventArgs e)
         {
             user = txtBox_user.Text;
