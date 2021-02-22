@@ -27,9 +27,7 @@ namespace PWBolt_GUI.Network
     static class WebServer
     {
         private static CookieContainer cookieJar = new CookieContainer();
-        //https://elucidative-designa.000webhostapp.com
-        //http://localhost
-        private static string webserver = @"http://localhost";
+        private static string webserver = @"https://elucidative-designa.000webhostapp.com";
         private static bool _isLoggedIn = false;
         public static bool IsLoggedIn { get { return _isLoggedIn; } set { _isLoggedIn = value; } }
 
@@ -53,7 +51,7 @@ namespace PWBolt_GUI.Network
             {
                 MessageBox.Show("Failed Connecting to webserver.");
             }
-            return "";
+            return "ERROR";
         }
 
         private static async Task<string> SendResponseAsync(string URL)
@@ -74,7 +72,7 @@ namespace PWBolt_GUI.Network
             {
                 MessageBox.Show("Failed Connecting to webserver.");
             }
-            return "";
+            return "ERROR";
         }
 
         public static async Task LoginPWBolt(string user, string password)
@@ -119,7 +117,7 @@ namespace PWBolt_GUI.Network
             string json = JsonConvert.SerializeObject(acc);
             Task<string> taskResponse = SendPostRequestAsync(json, webserver + "/bolt_AddAccount.php");
             string response = await taskResponse;
-            if (response.Contains("ERROR") || response.Contains("OK"))
+            if (response.Contains("ERROR"))
             {
                 MessageBox.Show(response);
             }
@@ -131,18 +129,19 @@ namespace PWBolt_GUI.Network
             string json = JsonConvert.SerializeObject(acc);
             Task<string> taskResponse = SendPostRequestAsync(json, webserver + "/bolt_EditAccount.php");
             string response = await taskResponse;
-            if (response.Contains("ERROR") || response.Contains("OK"))
+            if (response.Contains("ERROR"))
             {
                 MessageBox.Show(response);
             }
         }
+
         public static async Task bolt_DeleteAccountAsync(string id)
         {
             var accID = new AccID { id = id };
             string json = JsonConvert.SerializeObject(accID);
             Task<string> taskResponse = SendPostRequestAsync(json, webserver + "/bolt_DeleteAccount.php");
             string response = await taskResponse;
-            if (response.Contains("ERROR") || response.Contains("OK"))
+            if (response.Contains("ERROR"))
             {
                 MessageBox.Show(response);
             }
