@@ -1,4 +1,5 @@
 <?php
+    session_start();
     //Various validation for inputs
     $data = json_decode(file_get_contents('php://input'), true);
     //check if both username and pwbolt exist
@@ -39,7 +40,6 @@
               // see php documentation about password_verify and password_hash for more info
               if(password_verify($pwbolt, $verifyPass)) { 
                 echo "Status:OK, Login Success.";
-                  session_start();
                   $_SESSION['loggedin'] = true;
                   $_SESSION['guid'] = $guid;
                   $_SESSION['pwbolt'] = $pwbolt;

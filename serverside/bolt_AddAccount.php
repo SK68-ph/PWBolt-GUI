@@ -10,7 +10,7 @@
     die("Status:ERROR, Params Invalid");
 
     // check if characters are valid.
-    if (preg_match("/[^A-Za-z0-9\.]/", $data["website"]) || preg_match("/[^A-Za-z0-9\@\.]/", $data["username"]))
+    if (preg_match("/[^A-Za-z0-9\.\:\/]/", $data["website"]) || preg_match("/[^A-Za-z0-9\@\.]/", $data["username"]))
     die("Status:ERROR, Invalid Characters");
 
     // Init Database connection

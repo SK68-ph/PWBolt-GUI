@@ -20,7 +20,7 @@ namespace PWBolt_GUI
         /// <returns></returns>
         public bool isStrValid(string str)
         {
-            return Regex.IsMatch(str, @"^[a-zA-Z0-9\@\.]+$");
+            return Regex.IsMatch(str, @"^[a-zA-Z0-9\@\.\:\/]+$");
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace PWBolt_GUI
             string web = txtBox_website.Text;
             string user = txtBox_username.Text;
             string pass = txtBox_pass.Text;
-            if (!string.IsNullOrWhiteSpace(web) && !string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(pass) && DataGrid_Accounts.SelectedRows.Count >= 1)
+            if (isStrValid(web) && !string.IsNullOrWhiteSpace(web) && !string.IsNullOrWhiteSpace(user) && !string.IsNullOrWhiteSpace(pass) && DataGrid_Accounts.SelectedRows.Count >= 1)
             {
                 lbl_web.Visible = false;
                 lbl_user.Visible = false;
